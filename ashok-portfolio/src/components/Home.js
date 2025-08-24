@@ -62,9 +62,10 @@ const Home = () => {
   src={bgm}
   autoPlay
   loop
-  hidden
+  controls
   style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 999 }}
 />
+
 
       <div className="particle" />
 
