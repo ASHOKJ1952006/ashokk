@@ -59,12 +59,12 @@ const Home = () => {
     <div className="home-container">
       {/* Background music (autoplay + loop). Hidden element pinned so it persists */}
       <audio
-        src={bgm}
-        autoPlay
-        loop
-        
-        style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 999 }}
-      />
+  src={bgm}
+  autoPlay
+  loop
+  hidden
+  style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 999 }}
+/>
 
       <div className="particle" />
 
