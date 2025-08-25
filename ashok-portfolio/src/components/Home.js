@@ -58,7 +58,11 @@ const Home = () => {
   return (
     <div className="home-container">
       {/* Background music (autoplay + loop). Hidden element pinned so it persists */}
+<<<<<<< HEAD
       <audio
+=======
+     <audio
+>>>>>>> 1c7866d (hi)
   src={bgm}
   autoPlay
   loop
@@ -66,6 +70,10 @@ const Home = () => {
   style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 999 }}
 />
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1c7866d (hi)
 
       <div className="particle" />
 
@@ -252,14 +260,21 @@ const Home = () => {
                 <p>Implant Training</p>
               </div>
               <div className="stat-box">
-                <h3>7.91</h3>
+                <h3>7.99</h3>
                 <p>CGPA</p>
               </div>
             </div>
           </div>
           <div className="about-emoji">
-            <div className="emoji-circle">👨‍💻</div>
-          </div>
+  <div className="emoji-circle">
+    <img 
+      src={profileImage}   // replace with the correct path of your logo
+      alt="Logo"
+      style={{ width: "600px", height: "300px", borderRadius: "50%" }}
+    />
+  </div>
+</div>
+
         </div>
 
         {/* floating background bubbles */}
