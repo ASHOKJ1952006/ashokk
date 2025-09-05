@@ -260,11 +260,11 @@ const Home = () => {
             </div>
           </div>
           <div className="about-emoji">
-  <div className="emoji-circle">
+  <div className="">
     <img 
       src={profileImage}   // replace with the correct path of your logo
       alt="Logo"
-      style={{ width: "600px", height: "300px", borderRadius: "10%" }}
+      style={{ width: "400px", height: "300px", borderRadius: "50%" }}
     />
   </div>
 </div>
