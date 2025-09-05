@@ -9,7 +9,7 @@ import mongoLogo from '../assets/mongo.jpeg';
 import grocery from '../assets/grocery.jpeg';
 import ui from '../assets/figma.jpeg';
 import bgm from '../assets/background.mp3';
-
+import img from '../assets/cropped-desk.jpg';
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [showContact, setShowContact] = useState(false);
@@ -262,9 +262,9 @@ const Home = () => {
           <div className="about-emoji">
   <div className="">
     <img 
-      src={profileImage}   // replace with the correct path of your logo
+      src={img}   // replace with the correct path of your logo
       alt="Logo"
-      style={{ width: "400px", height: "300px", borderRadius: "50%" }}
+      style={{ width: "300px", height: "300px", borderRadius: "50%" }}
     />
   </div>
 </div>
