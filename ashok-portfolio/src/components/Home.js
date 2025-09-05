@@ -58,23 +58,17 @@ const Home = () => {
   return (
     <div className="home-container">
       {/* Background music (autoplay + loop). Hidden element pinned so it persists */}
-<<<<<<< HEAD
+
       <audio
-=======
-     <audio
->>>>>>> 1c7866d (hi)
+
+   
+
   src={bgm}
   autoPlay
   loop
   controls
   style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 999 }}
-/>
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 1c7866d (hi)
-
+  />
       <div className="particle" />
 
       {/* --- NAVBAR --- */}
