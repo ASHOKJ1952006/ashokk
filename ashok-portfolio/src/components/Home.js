@@ -56,7 +56,52 @@ const Home = () => {
   }
 
   return (
-    <div className="home-container">
+    <div className="home-container relative overflow-hidden">
+      {/* Animated Background Layers */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black animate-gradient-xy opacity-80"></div>
+        
+        {/* Floating Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow"></div>
+        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-float-medium"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float-fast"></div>
+        <div className="absolute top-2/3 right-1/3 w-64 h-64 bg-cyan-400/10 rounded-full blur-3xl animate-blob"></div>
+        
+        {/* Animated Grid Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'linear-gradient(#00ffe7 1px, transparent 1px), linear-gradient(90deg, #00ffe7 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            animation: 'wave 20s linear infinite'
+          }}></div>
+        </div>
+        
+        {/* Glowing Particles */}
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-cyan-400/30 animate-pulse-glow"
+            style={{
+              width: `${Math.random() * 8 + 2}px`,
+              height: `${Math.random() * 8 + 2}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${Math.random() * 3 + 2}s`,
+            }}
+          />
+        ))}
+        
+        {/* Spinning Rings */}
+        <div className="absolute top-1/4 left-1/2 w-96 h-96 border-2 border-cyan-500/20 rounded-full animate-spin-slow"></div>
+        <div className="absolute top-1/2 left-1/4 w-80 h-80 border-2 border-teal-500/20 rounded-full animate-spin-medium"></div>
+        
+        {/* Animated Beams */}
+        <div className="absolute top-0 left-1/4 w-1 h-full bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent animate-float-fast"></div>
+        <div className="absolute top-0 right-1/3 w-1 h-full bg-gradient-to-b from-transparent via-teal-500/30 to-transparent animate-float-medium" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       {/* Background music (autoplay + loop). Hidden element pinned so it persists */}
 
       <audio
@@ -72,7 +117,7 @@ const Home = () => {
       <div className="particle" />
 
       {/* --- NAVBAR --- */}
-      <header className="navbar">
+      <header className="navbar relative z-50">
         <div className="logo-section">
           <img
             src={profileImage}
@@ -167,7 +212,7 @@ const Home = () => {
       )}
 
       {/* --- HERO SECTION --- */}
-      <main id="home" className="hero">
+      <main id="home" className="hero relative z-10">
         <h2 className="hero-title">Hey there, I&apos;m Ashok 👋</h2>
         <h3>Problem Solver • Full Stack Developer • CSE Undergrad</h3>
         <p className="hero-subtext">
@@ -186,7 +231,7 @@ const Home = () => {
       </main>
 
       {/* --- SOCIAL CARDS SECTION --- */}
-      <section className="social-cards-section">
+      <section className="social-cards-section relative z-10">
         <div className="card-grid">
           <div className={`social-card ${showSocials ? 'animate' : ''}`}>
             <FaLinkedin className="social-icon linkedin" />
@@ -230,7 +275,12 @@ const Home = () => {
       </section>
 
       {/* --- ABOUT SECTION --- */}
-      <section id="about" className="about-section">
+      <section id="about" className="about-section relative z-10">
+        {/* Additional animated background elements for About section */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+          <div className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-float-slow"></div>
+        </div>
         <h2 className="section-header">About Me</h2>
         <div className="about-content">
           <div className="about-text">
@@ -279,7 +329,13 @@ const Home = () => {
       </section>
 
       {/* --- SKILLS SECTION --- */}
-      <section id="skills" className={`skills-section ${showSkills ? 'reveal' : ''}`} ref={skillsRef}>
+      <section id="skills" className={`skills-section ${showSkills ? 'reveal' : ''} relative z-10`} ref={skillsRef}>
+        {/* Animated background for skills section */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-full blur-3xl animate-float-medium"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-to-tl from-teal-500/10 to-transparent rounded-full blur-3xl animate-float-slow"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-cyan-500/10 rounded-full animate-spin-slow"></div>
+        </div>
         <div className="floating-bg">
           <span></span><span></span><span></span>
           <span></span><span></span><span></span>
@@ -351,6 +407,18 @@ const Home = () => {
                 rel="noreferrer"
               >
                 View Figma Page
+              </a>
+            </div>
+            <div className="hackathon-card">
+              <h4>ALGORENA&apos;25 - CSE Department</h4>
+              <p><strong>Project:</strong> Civic Issue Reporting and Resolving</p>
+              <p><strong>Prize:</strong> 🥈 2nd Place</p>
+              <a
+                href="https://github.com/Bharani-dharan-k/civic-main"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Github Repo
               </a>
             </div>
 
@@ -437,7 +505,24 @@ const Home = () => {
       </section>
 
       {/* --- PROJECTS SECTION --- */}
-      <section id="projects" className="projects-section">
+      <section id="projects" className="projects-section relative z-10">
+        {/* Animated background for projects section */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-bl from-cyan-400/10 to-transparent rounded-full blur-3xl animate-blob"></div>
+          <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-3xl animate-float-fast"></div>
+          {/* Animated particles specific to projects section */}
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={`project-particle-${i}`}
+              className="absolute w-2 h-2 bg-cyan-400/40 rounded-full animate-pulse-glow"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
         <div className="floating-bg">
           <span></span><span></span><span></span>
           <span></span><span></span><span></span>
