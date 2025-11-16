@@ -11,6 +11,8 @@ import ui from '../assets/figma.jpeg';
 import bgm from '../assets/background.mp3';
 import img from '../assets/cropped-desk.jpg';
 import cover from '../assets/maxresdefault.jpg';
+import resumePDF from '../assets/ASHOKJ`18.pdf';
+import emailjs from '@emailjs/browser';
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -22,9 +24,21 @@ const Home = () => {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(0.7);
+  const [modelFailed, setModelFailed] = useState(false);
+  const [formName, setFormName] = useState('');
+  const [formPhone, setFormPhone] = useState('');
+  const [formMessage, setFormMessage] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState('');
 
   const skillsRef = useRef(null);
   const audioRef = useRef(null);
+  const EMAILJS_SERVICE_ID = 'service_pjg083n';
+  const EMAILJS_TEMPLATE_ID = 'template_00845ib';
+  const EMAILJS_PUBLIC_KEY = '8lOjTDUoWUCuXIckA';
+  // Optional fallback provider (no domain whitelist needed). Get a free key at https://web3forms.com
+  const WEB3FORMS_ACCESS_KEY = 'c54a649e-d64c-4966-8b58-efd26bc028bd';
 
   const toggleModal = () => setShowModal((v) => !v);
   const toggleContact = () => setShowContact((v) => !v);
@@ -59,6 +73,10 @@ const Home = () => {
       audioRef.current.volume = volume;
     }
   }, [volume]);
+
+  // Note: we pass publicKey via send() options to avoid init ordering issues
+
+  // 3D: using scene.gltf + scene.bin + textures/ from public
 
   const formatTime = (sec) => {
     if (isNaN(sec)) return '0:00';
@@ -103,8 +121,33 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="loader-container">
-        <div className="loader-text">Welcome to Ashok&apos;s Portfolio</div>
+      <div className="entry-welcome">
+        <div className="entry-card">
+          <model-viewer
+            src="scene.gltf"
+            autoplay
+            camera-controls
+            loading="eager"
+            reveal="auto"
+            auto-rotate
+            environment-image="neutral"
+            camera-orbit="auto auto auto"
+            camera-target="auto"
+            bounds="tight"
+            shadow-softness="0.6"
+            background-color="transparent"
+            interaction-policy="allow-when-focused"
+            exposure="1"
+            shadow-intensity="0.6"
+            disable-zoom
+            className="entry-model"
+            onError={() => setModelFailed(true)}
+          ></model-viewer>
+          <div className="entry-text">
+            <div className="entry-title">Welcome to Ashok&apos;s Portfolio</div>
+            <div className="entry-sub">{modelFailed ? 'Unable to load model. Check scene.gltf/bin/texture paths.' : 'Preparing your experience…'}</div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -230,36 +273,131 @@ const Home = () => {
         <div className="modal-overlay" onClick={toggleContact}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Contact Me</h2>
-            <p>
-              <FaEnvelope /> Email:{' '}
-              <a href="mailto:ashokj.23cse@kongu.edu">ashokj.23cse@kongu.edu</a>
-            </p>
-            <p>
-              <FaPhone /> Phone: <a href="tel:9345667718">93456 67718</a>
-            </p>
-            <p>
-              <FaLinkedin /> LinkedIn:{' '}
-              <a
-                href="https://www.linkedin.com/in/ashok-jayaraj123"
-                target="_blank"
-                rel="noreferrer"
-              >
-                linkedin.com/in/ashok-jayaraj123
-              </a>
-            </p>
-            <p>
-              <FaGithub /> GitHub:{' '}
-              <a
-                href="https://github.com/ASHOKJ1952006"
-                target="_blank"
-                rel="noreferrer"
-              >
-                github.com/ASHOKJ1952006
-              </a>
-            </p>
-            <button className="btn-close" onClick={toggleContact}>
-              Close
-            </button>
+            <form
+              className="contact-form"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!formName || !formPhone || !formMessage) {
+                  setSendStatus('Please fill all fields.');
+                  return;
+                }
+                setSending(true);
+                setSendStatus('');
+                try {
+                  const params = {
+                    // Variables matching your EmailJS template
+                    title: 'Portfolio Contact',
+                    name: formName,
+                    time: new Date().toLocaleString(),
+                    message: formMessage,
+                    ASHOK: 'ASHOK',
+                    email: formEmail,
+                    // Extra variables for your reference (not required by template)
+                    from_phone: formPhone,
+                  };
+                  // Single SDK call with public key argument
+                  await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    params,
+                    { publicKey: EMAILJS_PUBLIC_KEY }
+                  );
+                  setSendStatus('Message sent successfully.');
+                  setFormName('');
+                  setFormPhone('');
+                  setFormMessage('');
+                  setFormEmail('');
+                } catch (err) {
+                  console.error('EmailJS send error:', err);
+                  // Fallback via Web3Forms if access key is provided
+                  if (WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== 'YOUR_WEB3FORMS_ACCESS_KEY') {
+                    try {
+                      const resp = await fetch('https://api.web3forms.com/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                        body: JSON.stringify({
+                          access_key: WEB3FORMS_ACCESS_KEY,
+                          subject: 'Portfolio Contact',
+                          name: formName,
+                          email: formEmail || 'no-email@form.local',
+                          message: `${formMessage}\nPhone: ${formPhone}\nTime: ${new Date().toLocaleString()}`,
+                        }),
+                      });
+                      const data = await resp.json();
+                      if (data.success) {
+                        setSendStatus('Message sent successfully.');
+                        setFormName('');
+                        setFormPhone('');
+                        setFormMessage('');
+                        setFormEmail('');
+                      } else {
+                        throw new Error(data.message || 'Web3Forms failed');
+                      }
+                    } catch (wErr) {
+                      console.error('Web3Forms error:', wErr);
+                      setSendStatus(`Failed to send. ${wErr?.message || 'Try again later.'}`);
+                    }
+                  } else {
+                    setSendStatus('Email service blocked by domain policy. Provide a Web3Forms access key to enable fallback.');
+                  }
+                } finally {
+                  setSending(false);
+                }
+              }}
+            >
+              <div className="form-row">
+                <label htmlFor="cf-name">Name</label>
+                <input
+                  id="cf-name"
+                  type="text"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  placeholder="Your name"
+                  required
+                />
+              </div>
+              <div className="form-row">
+                <label htmlFor="cf-email">Email</label>
+                <input
+                  id="cf-email"
+                  type="email"
+                  value={formEmail}
+                  onChange={(e) => setFormEmail(e.target.value)}
+                  placeholder="Your email (for reply)"
+                />
+              </div>
+              <div className="form-row">
+                <label htmlFor="cf-phone">Contact Number</label>
+                <input
+                  id="cf-phone"
+                  type="tel"
+                  value={formPhone}
+                  onChange={(e) => setFormPhone(e.target.value)}
+                  placeholder="Your phone number"
+                  required
+                />
+              </div>
+              <div className="form-row">
+                <label htmlFor="cf-message">Message</label>
+                <textarea
+                  id="cf-message"
+                  rows="4"
+                  value={formMessage}
+                  onChange={(e) => setFormMessage(e.target.value)}
+                  placeholder="Your message"
+                  required
+                />
+              </div>
+              {sendStatus && (
+                <div className="form-status">{sendStatus}</div>
+              )}
+              <div className="form-actions">
+                <button type="submit" className="btn download-cv" disabled={sending}>
+                  {sending ? 'Sending...' : 'Send Message'}
+                </button>
+                <button type="button" className="btn-outline" onClick={toggleContact}>Close</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -360,6 +498,9 @@ const Home = () => {
                 <h3>7.99</h3>
                 <p>CGPA</p>
               </div>
+            </div>
+            <div className="about-actions" style={{ marginTop: '1rem' }}>
+              <a href={resumePDF} download className="btn download-cv">Download CV</a>
             </div>
           </div>
           <div className="about-emoji">
@@ -699,7 +840,7 @@ const Home = () => {
           <img src={cover} alt="cover" className="mp-cover" />
           <div className="mp-meta">
             <div className="mp-title">Background Track</div>
-            <div className="mp-sub">Now Playing</div>
+            <div className="mp-sub">BLUE</div>
           </div>
         </div>
         <div className="mp-center">
