@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './Home.css';
 import profileImage from '../assets/11zon_cropped.png';
-import { FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaPhone } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaPhone, FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 import newsImage from '../assets/news.jpg';
 import reviewImage from '../assets/review.jpeg';
 import javaLogo from '../assets/java.png';
@@ -10,14 +10,21 @@ import grocery from '../assets/grocery.jpeg';
 import ui from '../assets/figma.jpeg';
 import bgm from '../assets/background.mp3';
 import img from '../assets/cropped-desk.jpg';
+import cover from '../assets/maxresdefault.jpg';
+
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showSocials, setShowSocials] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [volume, setVolume] = useState(0.7);
 
   const skillsRef = useRef(null);
+  const audioRef = useRef(null);
 
   const toggleModal = () => setShowModal((v) => !v);
   const toggleContact = () => setShowContact((v) => !v);
@@ -46,6 +53,53 @@ const Home = () => {
       if (skillsRef.current) observer.unobserve(skillsRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  const formatTime = (sec) => {
+    if (isNaN(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  const onLoadedMetadata = () => {
+    if (!audioRef.current) return;
+    setDuration(audioRef.current.duration || 0);
+    setIsPlaying(!audioRef.current.paused);
+  };
+
+  const onTimeUpdate = () => {
+    if (!audioRef.current) return;
+    setCurrentTime(audioRef.current.currentTime || 0);
+  };
+
+  const onSeek = (e) => {
+    const t = Number(e.target.value);
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = t;
+    setCurrentTime(t);
+  };
+
+  const onChangeVolume = (e) => {
+    const v = Number(e.target.value);
+    setVolume(v);
+  };
 
   if (isLoading) {
     return (
@@ -105,15 +159,14 @@ const Home = () => {
       {/* Background music (autoplay + loop). Hidden element pinned so it persists */}
 
       <audio
-
-   
-
-  src={bgm}
-  autoPlay
-  loop
-  controls
-  style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 999 }}
-  />
+        ref={audioRef}
+        src={bgm}
+        autoPlay
+        loop
+        onLoadedMetadata={onLoadedMetadata}
+        onTimeUpdate={onTimeUpdate}
+        style={{ display: 'none' }}
+      />
       <div className="particle" />
 
       {/* --- NAVBAR --- */}
@@ -312,7 +365,7 @@ const Home = () => {
           <div className="about-emoji">
   <div className="">
     <img 
-      src={img}   // replace with the correct path of your logo
+      src={img}
       alt="Logo"
       style={{ width: "300px", height: "300px", borderRadius: "50%" }}
     />
@@ -552,13 +605,6 @@ const Home = () => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <FaExternalLinkAlt /> Live Demo
-                </a>
-                <a
-                  href="https://github.com/Bharani-dharan-k/News-Senti.git"
-                  target="_blank"
-                  rel="noreferrer"
-                >
                   <FaGithub /> Code
                 </a>
               </div>
@@ -579,13 +625,6 @@ const Home = () => {
                 <span>JavaScript</span>
               </div>
               <div className="project-links">
-                <a
-                  href="https://github.com/ASHOKJ1952006/Grocessory-delivery-website.git"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <FaExternalLinkAlt /> Live Demo
-                </a>
                 <a
                   href="https://github.com/ASHOKJ1952006/Grocessory-delivery-website.git"
                   target="_blank"
@@ -613,13 +652,6 @@ const Home = () => {
                 <span>Langdetect</span>
               </div>
               <div className="project-links">
-                <a
-                  href="https://github.com/Bharani-dharan-k/Trust-Review.git"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <FaExternalLinkAlt /> Live Demo
-                </a>
                 <a
                   href="https://github.com/Bharani-dharan-k/Trust-Review.git"
                   target="_blank"
@@ -661,6 +693,54 @@ const Home = () => {
           <span></span><span></span><span></span>
         </div>
       </section>
+
+      <div className="music-player">
+        <div className="mp-left">
+          <img src={cover} alt="cover" className="mp-cover" />
+          <div className="mp-meta">
+            <div className="mp-title">Background Track</div>
+            <div className="mp-sub">Now Playing</div>
+          </div>
+        </div>
+        <div className="mp-center">
+          <div className="mp-controls">
+            <button className="mp-btn" aria-label="prev" disabled>
+              <FaStepBackward />
+            </button>
+            <button className="mp-btn mp-primary" aria-label="play-pause" onClick={togglePlay}>
+              {isPlaying ? <FaPause /> : <FaPlay />}
+            </button>
+            <button className="mp-btn" aria-label="next" disabled>
+              <FaStepForward />
+            </button>
+          </div>
+          <div className="mp-timeline">
+            <span className="mp-time">{formatTime(currentTime)}</span>
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              step="1"
+              value={currentTime}
+              onChange={onSeek}
+              className="mp-seek"
+            />
+            <span className="mp-time">{formatTime(duration)}</span>
+          </div>
+        </div>
+        <div className="mp-right">
+          {volume > 0 ? <FaVolumeUp /> : <FaVolumeMute />}
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={onChangeVolume}
+            className="mp-volume"
+          />
+        </div>
+      </div>
     </div>
   );
 };
