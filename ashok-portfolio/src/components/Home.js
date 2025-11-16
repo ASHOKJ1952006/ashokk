@@ -12,7 +12,6 @@ import bgm from '../assets/background.mp3';
 import img from '../assets/cropped-desk.jpg';
 import cover from '../assets/maxresdefault.jpg';
 import resumePDF from '../assets/ASHOKJ`18.pdf';
-import emailjs from '@emailjs/browser';
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -44,13 +43,14 @@ const Home = () => {
 
   const toggleModal = () => setShowModal((v) => !v);
   const toggleContact = () => setShowContact((v) => !v);
+  const enableHeavyIntro = (typeof window !== 'undefined') ? window.innerWidth >= 768 : true;
 
   // Fake splash/intro
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
       setTimeout(() => setShowSocials(true), 300);
-    }, 3000);
+    }, 1200);
     return () => clearTimeout(timer);
   }, []);
 
@@ -147,26 +147,28 @@ const Home = () => {
     return (
       <div className="entry-welcome">
         <div className="entry-card">
-          <model-viewer
-            src="scene.gltf"
-            autoplay
-            camera-controls
-            loading="eager"
-            reveal="auto"
-            auto-rotate
-            environment-image="neutral"
-            camera-orbit="auto auto auto"
-            camera-target="auto"
-            bounds="tight"
-            shadow-softness="0.6"
-            background-color="transparent"
-            interaction-policy="allow-when-focused"
-            exposure="1"
-            shadow-intensity="0.6"
-            disable-zoom
-            className="entry-model"
-            onError={() => setModelFailed(true)}
-          ></model-viewer>
+          {enableHeavyIntro && (
+            <model-viewer
+              src="scene.gltf"
+              autoplay
+              camera-controls
+              loading="eager"
+              reveal="auto"
+              auto-rotate
+              environment-image="neutral"
+              camera-orbit="auto auto auto"
+              camera-target="auto"
+              bounds="tight"
+              shadow-softness="0.6"
+              background-color="transparent"
+              interaction-policy="allow-when-focused"
+              exposure="1"
+              shadow-intensity="0.6"
+              disable-zoom
+              className="entry-model"
+              onError={() => setModelFailed(true)}
+            ></model-viewer>
+          )}
           <div className="entry-text">
             <div className="entry-title">Welcome to Ashok&apos;s Portfolio</div>
             <div className="entry-sub">{modelFailed ? 'Unable to load model. Check scene.gltf/bin/texture paths.' : 'Preparing your experience…'}</div>
@@ -199,7 +201,7 @@ const Home = () => {
         </div>
         
         {/* Glowing Particles */}
-        {[...Array(20)].map((_, i) => (
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-cyan-400/30 animate-pulse-glow"
@@ -230,6 +232,7 @@ const Home = () => {
         src={bgm}
         autoPlay
         loop
+        preload="metadata"
         onLoadedMetadata={onLoadedMetadata}
         onTimeUpdate={onTimeUpdate}
         style={{ display: 'none' }}
@@ -245,6 +248,8 @@ const Home = () => {
             className="profile-pic"
             onClick={toggleModal}
             style={{ cursor: 'pointer' }}
+            loading="lazy"
+            decoding="async"
           />
           <h1 className="logo-text">ASHOK J</h1>
         </div>
@@ -319,6 +324,8 @@ const Home = () => {
                     // Extra variables for your reference (not required by template)
                     from_phone: formPhone,
                   };
+                  // Dynamically import EmailJS to avoid loading it on first paint
+                  const { default: emailjs } = await import('@emailjs/browser');
                   // Single SDK call with public key argument
                   await emailjs.send(
                     EMAILJS_SERVICE_ID,
@@ -529,11 +536,13 @@ const Home = () => {
           </div>
           <div className="about-emoji">
   <div className="">
-    <img 
-      src={img}
-      alt="Logo"
-      style={{ width: "300px", height: "300px", borderRadius: "50%" }}
-    />
+            <img 
+              src={img}
+              alt="Logo"
+              style={{ width: "300px", height: "300px", borderRadius: "50%" }}
+              loading="lazy"
+              decoding="async"
+            />
   </div>
 </div>
 
@@ -751,7 +760,7 @@ const Home = () => {
         <div className="projects-grid">
           {/* Project 1 */}
           <div className="project-card">
-            <img src={newsImage} alt="News Senti" className="project-image" />
+            <img src={newsImage} alt="News Senti" className="project-image" loading="lazy" decoding="async" />
             <div className="project-content">
               <h3>News-Sentiment Analyser</h3>
               <p>
@@ -778,7 +787,7 @@ const Home = () => {
 
           {/* Project 2 */}
           <div className="project-card">
-            <img src={grocery} alt="Grocery Delivery" className="project-image" />
+            <img src={grocery} alt="Grocery Delivery" className="project-image" loading="lazy" decoding="async" />
             <div className="project-content">
               <h3>Grocery Delivery Website</h3>
               <p>
@@ -803,7 +812,7 @@ const Home = () => {
 
           {/* Project 3 */}
           <div className="project-card">
-            <img src={reviewImage} alt="Trust Review" className="project-image" />
+            <img src={reviewImage} alt="Trust Review" className="project-image" loading="lazy" decoding="async" />
             <div className="project-content">
               <h3>Trust-Review</h3>
               <p>
@@ -830,7 +839,7 @@ const Home = () => {
 
           {/* Project 4 */}
           <div className="project-card">
-            <img src={ui} alt="KEC Student Portal UI" className="project-image" />
+            <img src={ui} alt="KEC Student Portal UI" className="project-image" loading="lazy" decoding="async" />
             <div className="project-content">
               <h3>KEC Student Portal</h3>
               <p>
@@ -861,7 +870,7 @@ const Home = () => {
 
       <div className="music-player">
         <div className="mp-left">
-          <img src={cover} alt="cover" className="mp-cover" />
+          <img src={cover} alt="cover" className="mp-cover" loading="lazy" decoding="async" />
           <div className="mp-meta">
             <div className="mp-title">Background Track</div>
             <div className="mp-sub">BLUE</div>
