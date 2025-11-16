@@ -31,6 +31,8 @@ const Home = () => {
   const [formEmail, setFormEmail] = useState('');
   const [sending, setSending] = useState(false);
   const [sendStatus, setSendStatus] = useState('');
+  const [navHidden, setNavHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   const skillsRef = useRef(null);
   const audioRef = useRef(null);
@@ -51,6 +53,28 @@ const Home = () => {
     }, 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Hide navbar on scroll down, show on scroll up
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (y > lastScrollY && y > 50) {
+            setNavHidden(true);
+          } else {
+            setNavHidden(false);
+          }
+          setLastScrollY(y);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [lastScrollY]);
 
   // Observe skills section for reveal animation
   useEffect(() => {
@@ -213,7 +237,7 @@ const Home = () => {
       <div className="particle" />
 
       {/* --- NAVBAR --- */}
-      <header className="navbar relative z-50">
+      <header className={`navbar relative z-50 ${navHidden ? 'navbar--hidden' : ''}`}>
         <div className="logo-section">
           <img
             src={profileImage}
