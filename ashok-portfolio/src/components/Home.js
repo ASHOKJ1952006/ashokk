@@ -11,7 +11,7 @@ import ui from '../assets/figma.jpeg';
 import bgm from '../assets/background.mp3';
 import img from '../assets/cropped-desk.jpg';
 import cover from '../assets/maxresdefault.jpg';
-import resumePDF from '../assets/ASHOKJ`18.pdf';
+import resumePDF from '../assets/ashokkkkkkk.pdf';
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -50,7 +50,7 @@ const Home = () => {
     const timer = setTimeout(() => {
       setIsLoading(false);
       setTimeout(() => setShowSocials(true), 300);
-    }, 1200);
+    }, 4000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -145,34 +145,26 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="entry-welcome">
-        <div className="entry-card">
-          {enableHeavyIntro && (
-            <model-viewer
-              src="scene.gltf"
-              autoplay
-              camera-controls
-              loading="eager"
-              reveal="auto"
-              auto-rotate
-              environment-image="neutral"
-              camera-orbit="auto auto auto"
-              camera-target="auto"
-              bounds="tight"
-              shadow-softness="0.6"
-              background-color="transparent"
-              interaction-policy="allow-when-focused"
-              exposure="1"
-              shadow-intensity="0.6"
-              disable-zoom
-              className="entry-model"
-              onError={() => setModelFailed(true)}
-            ></model-viewer>
-          )}
-          <div className="entry-text">
-            <div className="entry-title">Welcome to Ashok&apos;s Portfolio</div>
-            <div className="entry-sub">{modelFailed ? 'Unable to load model. Check scene.gltf/bin/texture paths.' : 'Preparing your experience…'}</div>
+      <div className="entry-welcome entry-full">
+        <div className="entry-hero entry-hero--full">
+          <div className="butterfly-field" aria-hidden="true">
+            {Array.from({ length: 80 }).map((_, i) => (
+              <span
+                key={i}
+                className="butterfly"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 6}s`,
+                  fontSize: `${Math.random() * 22 + 16}px`,
+                  top: `${Math.random() * 100}%`,
+                  ['--floatDur']: `${8 + Math.random() * 12}s`,
+                }}
+              >
+                🦋
+              </span>
+            ))}
           </div>
+          <h1 className="entry-title-lg entry-title-center">Welcome to Ashok&apos;s Portfolio</h1>
         </div>
       </div>
     );
