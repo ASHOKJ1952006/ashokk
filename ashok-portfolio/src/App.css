@@ -8,17 +8,16 @@ body {
 .app {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  overflow: hidden;
-  justify-content: center;
-  text-align: center;
+  min-height: 100vh;
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow-x: hidden;
 }
 
 section {
-  width: 100vw;
-  height: 100vh;
-  padding: 40px;
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(24px, 5vw, 40px);
   box-sizing: border-box;
 }
 

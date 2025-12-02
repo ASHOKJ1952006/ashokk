@@ -32,6 +32,7 @@ const Home = () => {
   const [sendStatus, setSendStatus] = useState('');
   const [navHidden, setNavHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const skillsRef = useRef(null);
   const audioRef = useRef(null);
@@ -43,16 +44,47 @@ const Home = () => {
 
   const toggleModal = () => setShowModal((v) => !v);
   const toggleContact = () => setShowContact((v) => !v);
+  const toggleMenu = () => setIsMenuOpen((v) => !v);
+  const closeMenu = () => setIsMenuOpen(false);
   const enableHeavyIntro = (typeof window !== 'undefined') ? window.innerWidth >= 768 : true;
 
   // Fake splash/intro
   useEffect(() => {
+    // If there is a hash in URL (e.g., #contact), skip splash for better navigation
+    if (typeof window !== 'undefined' && window.location.hash) {
+      setIsLoading(false);
+      setTimeout(() => setShowSocials(true), 300);
+      return;
+    }
     const timer = setTimeout(() => {
       setIsLoading(false);
       setTimeout(() => setShowSocials(true), 300);
     }, 4000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 992) {
+        setIsMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // After loading completes, if a hash exists, scroll into view
+  useEffect(() => {
+    if (!isLoading && typeof window !== 'undefined') {
+      const { hash } = window.location;
+      if (hash) {
+        const el = document.querySelector(hash);
+        if (el && typeof el.scrollIntoView === 'function') {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+  }, [isLoading]);
 
   // Hide navbar on scroll down, show on scroll up
   useEffect(() => {
@@ -147,23 +179,6 @@ const Home = () => {
     return (
       <div className="entry-welcome entry-full">
         <div className="entry-hero entry-hero--full">
-          <div className="butterfly-field" aria-hidden="true">
-            {Array.from({ length: 80 }).map((_, i) => (
-              <span
-                key={i}
-                className="butterfly"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 6}s`,
-                  fontSize: `${Math.random() * 22 + 16}px`,
-                  top: `${Math.random() * 100}%`,
-                  ['--floatDur']: `${8 + Math.random() * 12}s`,
-                }}
-              >
-                🦋
-              </span>
-            ))}
-          </div>
           <h1 className="entry-title-lg entry-title-center">Welcome to Ashok&apos;s Portfolio</h1>
         </div>
       </div>
@@ -172,53 +187,15 @@ const Home = () => {
 
   return (
     <div className="home-container relative overflow-hidden">
-      {/* Animated Background Layers */}
+      {/* Blue Animated Background Layer */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black animate-gradient-xy opacity-80"></div>
-        
-        {/* Floating Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-float-slow"></div>
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-float-medium"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-float-fast"></div>
-        <div className="absolute top-2/3 right-1/3 w-64 h-64 bg-cyan-400/10 rounded-full blur-3xl animate-blob"></div>
-        
-        {/* Animated Grid Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(#00ffe7 1px, transparent 1px), linear-gradient(90deg, #00ffe7 1px, transparent 1px)',
-            backgroundSize: '50px 50px',
-            animation: 'wave 20s linear infinite'
-          }}></div>
-        </div>
-        
-        {/* Glowing Particles */}
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-cyan-400/30 animate-pulse-glow"
-            style={{
-              width: `${Math.random() * 8 + 2}px`,
-              height: `${Math.random() * 8 + 2}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${Math.random() * 3 + 2}s`,
-            }}
-          />
-        ))}
-        
-        {/* Spinning Rings */}
-        <div className="absolute top-1/4 left-1/2 w-96 h-96 border-2 border-cyan-500/20 rounded-full animate-spin-slow"></div>
-        <div className="absolute top-1/2 left-1/4 w-80 h-80 border-2 border-teal-500/20 rounded-full animate-spin-medium"></div>
-        
-        {/* Animated Beams */}
-        <div className="absolute top-0 left-1/4 w-1 h-full bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent animate-float-fast"></div>
-        <div className="absolute top-0 right-1/3 w-1 h-full bg-gradient-to-b from-transparent via-teal-500/30 to-transparent animate-float-medium" style={{ animationDelay: '2s' }}></div>
+        <div className="bg-animated-blue"></div>
+        <div className="orb-blue lg anim-delay-1" style={{ top: '12%', left: '8%' }}></div>
+        <div className="orb-blue md anim-delay-2" style={{ bottom: '14%', right: '12%' }}></div>
+        <div className="orb-blue sm anim-delay-3" style={{ top: '58%', left: '36%' }}></div>
       </div>
 
       {/* Background music (autoplay + loop). Hidden element pinned so it persists */}
-
       <audio
         ref={audioRef}
         src={bgm}
@@ -229,7 +206,6 @@ const Home = () => {
         onTimeUpdate={onTimeUpdate}
         style={{ display: 'none' }}
       />
-      <div className="particle" />
 
       {/* --- NAVBAR --- */}
       <header className={`navbar relative z-50 ${navHidden ? 'navbar--hidden' : ''}`}>
@@ -245,13 +221,27 @@ const Home = () => {
           />
           <h1 className="logo-text">ASHOK J</h1>
         </div>
-        <nav>
-          <ul className="nav-links">
-            <li><a href="#home" className="active">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact" onClick={(e)=>{e.preventDefault(); toggleContact();}}>Contact</a></li>
+        <button
+          type="button"
+          className={`nav-toggle ${isMenuOpen ? 'nav-toggle--open' : ''}`}
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMenuOpen}
+          onClick={toggleMenu}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <nav className="nav-wrapper" aria-label="Primary">
+          <ul
+            id="primary-navigation"
+            className={`nav-links ${isMenuOpen ? 'nav-links--open' : ''}`}
+          >
+            <li><a href="#home" className="active" onClick={closeMenu}>Home</a></li>
+            <li><a href="#about" onClick={closeMenu}>About</a></li>
+            <li><a href="#skills" onClick={closeMenu}>Skills</a></li>
+            <li><a href="#projects" onClick={closeMenu}>Projects</a></li>
+            <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
           </ul>
         </nav>
       </header>
@@ -435,7 +425,7 @@ const Home = () => {
 
         <div className="hero-buttons">
           <a href="#projects" className="btn-primary hover-effect">View My Work</a>
-          <button className="btn-outline" onClick={toggleContact}>Get In Touch</button>
+          <a href="#contact" className="btn-outline">Get In Touch</a>
         </div>
 
         {/* Social icons row */}
@@ -490,11 +480,6 @@ const Home = () => {
 
       {/* --- ABOUT SECTION --- */}
       <section id="about" className="about-section relative z-10">
-        {/* Additional animated background elements for About section */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
-          <div className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-teal-500/20 rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-float-slow"></div>
-        </div>
         <h2 className="section-header">About Me</h2>
         <div className="about-content">
           <div className="about-text">
@@ -510,12 +495,12 @@ const Home = () => {
             </p>
             <div className="about-stats">
               <div className="stat-box">
-                <h3>3</h3>
+                <h3>4+</h3>
                 <p>Projects Completed</p>
               </div>
               <div className="stat-box">
-                <h3>14 days</h3>
-                <p>Implant Training</p>
+                <h3>2</h3>
+                <p>Certifications completed</p>
               </div>
               <div className="stat-box">
                 <h3>7.99</h3>
@@ -539,27 +524,10 @@ const Home = () => {
 </div>
 
         </div>
-
-        {/* floating background bubbles */}
-        <div className="floating-bg">
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
-        </div>
       </section>
 
       {/* --- SKILLS SECTION --- */}
       <section id="skills" className={`skills-section ${showSkills ? 'reveal' : ''} relative z-10`} ref={skillsRef}>
-        {/* Animated background for skills section */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-full blur-3xl animate-float-medium"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-gradient-to-tl from-teal-500/10 to-transparent rounded-full blur-3xl animate-float-slow"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-cyan-500/10 rounded-full animate-spin-slow"></div>
-        </div>
-        <div className="floating-bg">
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
-        </div>
-
         <h2 className="section-header">Skills &amp; Expertise</h2>
 
         <div className="skills-cards">
@@ -658,11 +626,6 @@ const Home = () => {
         <h3 className="tech-title">Technical Proficiency</h3>
 
         <div className="progress-bars">
-          <div className="floating-bg">
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-          </div>
-
           <div className="bar">
             <span>JavaScript</span>
             <div className="progress">
@@ -711,42 +674,10 @@ const Home = () => {
             </div>
           </div>
         </div>
-
-        {/* --- BORDER LIGHT ANIMATION --- */}
-        <div className="border-light"></div>
-
-        <div className="floating-bg">
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
-        </div>
-
-        <div className="particle"></div>
       </section>
 
       {/* --- PROJECTS SECTION --- */}
       <section id="projects" className="projects-section relative z-10">
-        {/* Animated background for projects section */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-bl from-cyan-400/10 to-transparent rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-gradient-to-tr from-blue-500/10 to-transparent rounded-full blur-3xl animate-float-fast"></div>
-          {/* Animated particles specific to projects section */}
-          {[...Array(10)].map((_, i) => (
-            <div
-              key={`project-particle-${i}`}
-              className="absolute w-2 h-2 bg-cyan-400/40 rounded-full animate-pulse-glow"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-              }}
-            />
-          ))}
-        </div>
-        <div className="floating-bg">
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
-        </div>
-
         <h2 className="section-title">Featured Projects</h2>
 
         <div className="projects-grid">
@@ -853,10 +784,188 @@ const Home = () => {
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="floating-bg">
-          <span></span><span></span><span></span>
-          <span></span><span></span><span></span>
+      {/* --- CONTACT FOOTER SECTION --- */}
+      <section id="contact" className="contact-section relative z-10">
+        <div className="section-bg">
+          <div className="bg-animated-blue"></div>
+          <div className="orb-blue md anim-delay-1" style={{ top: '10%', left: '10%' }}></div>
+          <div className="orb-blue sm anim-delay-2" style={{ bottom: '8%', right: '15%' }}></div>
+        </div>
+
+        <div className="contact-wrapper">
+          <div className="contact-header">
+            <p className="contact-eyebrow">Let&apos;s Connect</p>
+            <h2 className="section-header">Get In Touch</h2>
+            <p className="contact-subtext">
+              Have a freelance requirement, internship opportunity, or product idea? Drop a quick note and I&apos;ll respond within 24 hours.
+            </p>
+          </div>
+
+          <div className="contact-content">
+            <div className="contact-cards">
+              <div className="contact-card">
+                <div className="contact-card-icon email">
+                  <FaEnvelope />
+                </div>
+                <h3>Email</h3>
+                <p>Share context or files anytime.</p>
+                <a href="mailto:ashokj.23cse@kongu.edu" className="contact-card-link">ashokj.23cse@kongu.edu</a>
+              </div>
+
+              <div className="contact-card">
+                <div className="contact-card-icon phone">
+                  <FaPhone />
+                </div>
+                <h3>Call / WhatsApp</h3>
+                <p>Reach me 9 AM – 6 PM IST.</p>
+                <a href="tel:9345667718" className="contact-card-link">+91 93456 67718</a>
+              </div>
+
+              <div className="contact-card">
+                <div className="contact-card-icon linkedin">
+                  <FaLinkedin />
+                </div>
+                <h3>LinkedIn</h3>
+                <p>Let&apos;s grow our professional network.</p>
+                <a
+                  href="https://www.linkedin.com/in/ashok-jayaraj123"
+                  className="contact-card-link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  linkedin.com/in/ashok-jayaraj123
+                </a>
+              </div>
+            </div>
+
+            <div className="contact-form-card">
+              <h3>Send a Message</h3>
+              <p className="contact-form-note">I usually respond within a day. Required fields are marked with *.</p>
+              <form
+                className="contact-form"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!formName || !formPhone || !formMessage) {
+                    setSendStatus('Please fill all fields.');
+                    return;
+                  }
+                  setSending(true);
+                  setSendStatus('');
+                  try {
+                    const params = {
+                      title: 'Portfolio Contact',
+                      name: formName,
+                      time: new Date().toLocaleString(),
+                      message: formMessage,
+                      ASHOK: 'ASHOK',
+                      email: formEmail,
+                      from_phone: formPhone,
+                    };
+                    const { default: emailjs } = await import('@emailjs/browser');
+                    await emailjs.send(
+                      EMAILJS_SERVICE_ID,
+                      EMAILJS_TEMPLATE_ID,
+                      params,
+                      { publicKey: EMAILJS_PUBLIC_KEY }
+                    );
+                    setSendStatus('Message sent successfully.');
+                    setFormName('');
+                    setFormPhone('');
+                    setFormMessage('');
+                    setFormEmail('');
+                  } catch (err) {
+                    console.error('EmailJS send error:', err);
+                    if (WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== 'YOUR_WEB3FORMS_ACCESS_KEY') {
+                      try {
+                        const resp = await fetch('https://api.web3forms.com/submit', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                          body: JSON.stringify({
+                            access_key: WEB3FORMS_ACCESS_KEY,
+                            subject: 'Portfolio Contact',
+                            name: formName,
+                            email: formEmail || 'no-email@form.local',
+                            message: `${formMessage}\nPhone: ${formPhone}\nTime: ${new Date().toLocaleString()}`,
+                          }),
+                        });
+                        const data = await resp.json();
+                        if (data.success) {
+                          setSendStatus('Message sent successfully.');
+                          setFormName('');
+                          setFormPhone('');
+                          setFormMessage('');
+                          setFormEmail('');
+                        } else {
+                          throw new Error(data.message || 'Web3Forms failed');
+                        }
+                      } catch (wErr) {
+                        console.error('Web3Forms error:', wErr);
+                        setSendStatus(`Failed to send. ${wErr?.message || 'Try again later.'}`);
+                      }
+                    } else {
+                      setSendStatus('Email service blocked by domain policy. Provide a Web3Forms access key to enable fallback.');
+                    }
+                  } finally {
+                    setSending(false);
+                  }
+                }}
+              >
+                <div className="form-row">
+                  <label htmlFor="footer-name">Name *</label>
+                  <input
+                    id="footer-name"
+                    type="text"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    placeholder="Your name"
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <label htmlFor="footer-email">Email</label>
+                  <input
+                    id="footer-email"
+                    type="email"
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
+                    placeholder="Your email (for reply)"
+                  />
+                </div>
+                <div className="form-row">
+                  <label htmlFor="footer-phone">Contact Number *</label>
+                  <input
+                    id="footer-phone"
+                    type="tel"
+                    value={formPhone}
+                    onChange={(e) => setFormPhone(e.target.value)}
+                    placeholder="Your phone number"
+                    required
+                  />
+                </div>
+                <div className="form-row">
+                  <label htmlFor="footer-message">Message *</label>
+                  <textarea
+                    id="footer-message"
+                    rows="4"
+                    value={formMessage}
+                    onChange={(e) => setFormMessage(e.target.value)}
+                    placeholder="Your message"
+                    required
+                  />
+                </div>
+                {sendStatus && (
+                  <div className="form-status">{sendStatus}</div>
+                )}
+                <div className="form-actions">
+                  <button type="submit" className="btn download-cv" disabled={sending}>
+                    {sending ? 'Sending...' : 'Send Message'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </section>
 
