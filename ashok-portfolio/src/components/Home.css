@@ -719,39 +719,65 @@ html {
   transform: scale(1);
 }
 
-.skill-card ul {
+.skill-list {
   list-style: none;
   padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
 }
 
-.skill-card ul li {
+.skill-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 255, 231, 0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
   position: relative;
-  padding-left: 20px;
+  overflow: hidden;
+  isolation: isolate;
   opacity: 0;
-  animation: slideInFromTop 0.4s ease-out forwards;
-  transition: transform 0.3s ease, color 0.3s ease;
+  animation: slideInFromTop 0.45s ease-out forwards;
 }
 
-.skill-card ul li:nth-child(1) { animation-delay: 0.1s; }
-.skill-card ul li:nth-child(2) { animation-delay: 0.15s; }
-.skill-card ul li:nth-child(3) { animation-delay: 0.2s; }
-.skill-card ul li:nth-child(4) { animation-delay: 0.25s; }
-.skill-card ul li:nth-child(5) { animation-delay: 0.3s; }
-
-.skill-card ul li::before {
-  content: '▹';
+.skill-item::after {
+  content: '';
   position: absolute;
-  left: 0;
-  color: #00ffe7;
-  transition: transform 0.3s ease;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(0, 255, 231, 0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: -1;
 }
 
-.skill-card:hover ul li::before {
-  transform: translateX(3px);
+.skill-item:hover::after {
+  opacity: 1;
 }
 
-.skill-card:hover ul li {
-  transform: translateX(5px);
+.skill-icon {
+  font-size: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.skill-label {
+  font-weight: 600;
+  color: #e8f8ff;
+}
+
+.skill-card:hover .skill-item {
+  transform: translateX(4px);
   color: #e0e0e0;
   opacity: 1;
 }
@@ -1555,8 +1581,9 @@ html {
   100% { opacity: 0.6; }
 }
 .certifications-container, .hackathons-container {
-  margin-top: 40px;
-  padding: 20px;
+  margin: 32px auto 0;
+  padding: 18px;
+  width: min(100%, 960px);
   background: linear-gradient(to bottom right, #121c2c, #1c2c44);
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -1572,17 +1599,33 @@ html {
   box-shadow: 0 12px 30px rgba(0, 255, 231, 0.2);
 }
 
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.hackathon-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
 .cert-card, .hackathon-card {
   display: flex;
-  align-items: center;
-  margin-top: 15px;
+  align-items: flex-start;
+  gap: 12px;
   background-color: #1e2a40;
   border-radius: 10px;
-  padding: 15px;
+  padding: 14px 16px;
   transition: all 0.4s ease;
   border: 1px solid transparent;
   opacity: 0;
   animation: slideInFromTop 0.6s ease-out forwards;
+}
+
+.hackathon-card {
+  flex-direction: column;
 }
 
 .cert-card:nth-child(2) {

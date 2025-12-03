@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './Home.css';
 import profileImage from '../assets/11zon_cropped.png';
-import { FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaPhone, FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaPhone, FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaVolumeMute, FaJava } from 'react-icons/fa';
+import { SiReact, SiJavascript, SiHtml5, SiCss3, SiBootstrap, SiNodedotjs, SiPython, SiPostgresql, SiMongodb, SiFigma, SiAdobeillustrator, SiCanva, SiC } from 'react-icons/si';
 import newsImage from '../assets/news.jpg';
 import reviewImage from '../assets/review.jpeg';
 import javaLogo from '../assets/java.png';
@@ -12,6 +13,45 @@ import bgm from '../assets/background.mp3';
 import img from '../assets/cropped-desk.jpg';
 import cover from '../assets/maxresdefault.jpg';
 import resumePDF from '../assets/ashokkkkkkk.pdf';
+
+const skillCategories = [
+  {
+    title: 'Frontend Development',
+    skills: [
+      { label: 'React', icon: SiReact, color: '#61dafb' },
+      { label: 'JavaScript', icon: SiJavascript, color: '#f7df1e' },
+      { label: 'HTML', icon: SiHtml5, color: '#e34f26' },
+      { label: 'CSS', icon: SiCss3, color: '#2965f1' },
+      { label: 'Bootstrap', icon: SiBootstrap, color: '#7952b3' },
+    ],
+  },
+  {
+    title: 'Backend Development',
+    skills: [
+      { label: 'Node.js', icon: SiNodedotjs, color: '#3c873a' },
+      { label: 'Python', icon: SiPython, color: '#ffd343' },
+      { label: 'PostgreSQL', icon: SiPostgresql, color: '#336791' },
+      { label: 'MongoDB', icon: SiMongodb, color: '#13aa52' },
+    ],
+  },
+  {
+    title: 'UI/UX Design',
+    skills: [
+      { label: 'Figma', icon: SiFigma, color: '#a259ff' },
+      { label: 'Adobe Illustrator', icon: SiAdobeillustrator, color: '#ff9a00' },
+      { label: 'Canva', icon: SiCanva, color: '#00c4cc' },
+    ],
+  },
+  {
+    title: 'Programming Languages',
+    skills: [
+      { label: 'C', icon: SiC, color: '#00599c' },
+      { label: 'Java', icon: FaJava, color: '#f8981d' },
+      { label: 'Python', icon: SiPython, color: '#ffd343' },
+      { label: 'JavaScript', icon: SiJavascript, color: '#f7df1e' },
+    ],
+  },
+];
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -531,38 +571,31 @@ const Home = () => {
         <h2 className="section-header">Skills &amp; Expertise</h2>
 
         <div className="skills-cards">
-          <div className="skill-card hover-effect">
-            <h3>Frontend Development</h3>
-            <ul>
-              <li>React</li><li>JavaScript</li><li>HTML</li><li>CSS</li><li>Bootstrap</li>
-            </ul>
-          </div>
+          {skillCategories.map((category) => (
+            <div className="skill-card hover-effect" key={category.title}>
+              <h3>{category.title}</h3>
+              <ul className="skill-list">
+                {category.skills.map(({ label, icon: Icon, color }, skillIdx) => (
+                  <li
+                    className="skill-item"
+                    key={`${category.title}-${label}`}
+                    style={{ animationDelay: `${0.1 * (skillIdx + 1)}s` }}
+                  >
+                    <span className="skill-icon" style={{ color }}>
+                      <Icon aria-hidden="true" />
+                    </span>
+                    <span className="skill-label">{label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
-          <div className="skill-card hover-effect">
-            <h3>Backend Development</h3>
-            <ul>
-              <li>Node.js</li><li>Python</li><li>PostgreSQL</li><li>MongoDB</li>
-            </ul>
-          </div>
-
-          <div className="skill-card hover-effect">
-            <h3>UI/UX Design</h3>
-            <ul>
-              <li>Figma</li><li>Adobe Illustrator</li><li>Canva</li>
-            </ul>
-          </div>
-
-          <div className="skill-card hover-effect">
-            <h3>Programming Languages</h3>
-            <ul>
-              <li>C</li><li>Java</li><li>Python</li><li>JavaScript</li>
-            </ul>
-          </div>
-
-          {/* --- GLOBAL CERTIFICATIONS --- */}
-          <div className="certifications-container fade-in">
-            <h3 className="sub-header">📜 Global Certifications</h3>
-
+        {/* --- GLOBAL CERTIFICATIONS --- */}
+        <div className="certifications-container fade-in">
+          <h3 className="sub-header">📜 Global Certifications</h3>
+          <div className="cert-grid">
             <div className="cert-card">
               <img src={javaLogo} alt="Java SE17" className="cert-logo" />
               <div>
@@ -579,11 +612,12 @@ const Home = () => {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* --- HACKATHONS --- */}
-          <div className="hackathons-container fade-in">
-            <h3 className="sub-header">🏆 Hackathons</h3>
-
+        {/* --- HACKATHONS --- */}
+        <div className="hackathons-container fade-in">
+          <h3 className="sub-header">🏆 Hackathons</h3>
+          <div className="hackathon-list">
             <div className="hackathon-card">
               <h4>HACKNOVATE&apos;25 - CSD Department</h4>
               <p><strong>Project:</strong> KEC Student Portal UI Design</p>
