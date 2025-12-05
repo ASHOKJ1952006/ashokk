@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Spline from '@splinetool/react-spline';
 import './Home.css';
 import profileImage from '../assets/11zon_cropped.png';
 import { FaGithub, FaLinkedin, FaEnvelope, FaExternalLinkAlt, FaPhone, FaPlay, FaPause, FaStepBackward, FaStepForward, FaVolumeUp, FaVolumeMute, FaJava } from 'react-icons/fa';
@@ -13,6 +14,10 @@ import bgm from '../assets/background.mp3';
 import img from '../assets/cropped-desk.jpg';
 import cover from '../assets/maxresdefault.jpg';
 import resumePDF from '../assets/ashokkkkkkk.pdf';
+
+const SPLINE_SCENE_URL = 'https://prod.spline.design/pt6uDRUZEbmCnqIO/scene.splinecode';
+const SPLINE_PREVIEW_IMAGE = 'data:image/png;base64,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';
+const HERO_SPLINE_SCENE_URL = 'https://prod.spline.design/ja64UyWvjVuriUCn/scene.splinecode';
 
 const skillCategories = [
   {
@@ -76,6 +81,7 @@ const Home = () => {
 
   const skillsRef = useRef(null);
   const audioRef = useRef(null);
+  const splineRef = useRef(null);
   const EMAILJS_SERVICE_ID = 'service_pjg083n';
   const EMAILJS_TEMPLATE_ID = 'template_00845ib';
   const EMAILJS_PUBLIC_KEY = '8lOjTDUoWUCuXIckA';
@@ -99,9 +105,23 @@ const Home = () => {
     const timer = setTimeout(() => {
       setIsLoading(false);
       setTimeout(() => setShowSocials(true), 300);
-    }, 4000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) return;
+    const node = splineRef.current;
+    if (!node) return;
+    const handleLoad = () => setModelFailed(false);
+    const handleError = () => setModelFailed(true);
+    node.addEventListener('load', handleLoad);
+    node.addEventListener('error', handleError);
+    return () => {
+      node.removeEventListener('load', handleLoad);
+      node.removeEventListener('error', handleError);
+    };
+  }, [isLoading]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -219,7 +239,28 @@ const Home = () => {
     return (
       <div className="entry-welcome entry-full">
         <div className="entry-hero entry-hero--full">
-          <h1 className="entry-title-lg entry-title-center">Welcome to Ashok&apos;s Portfolio</h1>
+          <div className="entry-spline-wrap">
+            {!modelFailed && (
+              <div className="entry-spline" ref={splineRef}>
+                <Spline
+                  scene={SPLINE_SCENE_URL}
+                  aria-label="Ashok portfolio 3D intro"
+                  onLoad={() => setModelFailed(false)}
+                  onError={() => setModelFailed(true)}
+                />
+              </div>
+            )}
+            <div className="entry-splash-overlay">
+              <p className="entry-splash-text"></p>
+              <span className="entry-splash-sub"></span>
+            </div>
+            {modelFailed && (
+              <div className="entry-spline-fallback">
+                <h2>Welcome to Ashok&apos;s Portfolio</h2>
+                <p>3D intro couldn&apos;t load on this network. The site will appear in a moment.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -457,21 +498,35 @@ const Home = () => {
 
       {/* --- HERO SECTION --- */}
       <main id="home" className="hero relative z-10">
-        <h2 className="hero-title">Hey there, I&apos;m Ashok 👋</h2>
-        <h3>Problem Solver • Full Stack Developer • CSE Undergrad</h3>
-        <p className="hero-subtext">
-          Code. Build. Solve. A Computer Science Engineer exploring the future through technology.
-        </p>
+        <div className="hero-grid">
+          <div className="hero-left">
+            <h2 className="hero-title">Hey there, I&apos;m Ashok </h2>
+            <h3>Problem Solver • Full Stack Developer • CSE Undergrad</h3>
+            <p className="hero-subtext">
+              Code. Build. Solve. A Computer Science Engineer exploring the future through technology.
+            </p>
 
-        <div className="hero-buttons">
-          <a href="#projects" className="btn-primary hover-effect">View My Work</a>
-          <a href="#contact" className="btn-outline">Get In Touch</a>
+            <div className="hero-buttons">
+              <a href="#projects" className="btn-primary hover-effect">View My Work</a>
+              <a href="#contact" className="btn-outline">Get In Touch</a>
+            </div>
+          </div>
+
+          <div className="hero-right">
+            {!modelFailed ? (
+              <Spline
+                scene={HERO_SPLINE_SCENE_URL}
+                aria-label="Hero 3D scene"
+                className="hero-spline"
+              />
+            ) : (
+              <div className="hero-spline-fallback">
+                3D preview unavailable on this network.
+              </div>
+            )}
+            <span className="hero-spline-label">AshBot</span>
+          </div>
         </div>
-
-        {/* Social icons row */}
-        
-
-        
       </main>
 
       {/* --- SOCIAL CARDS SECTION --- */}
